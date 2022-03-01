@@ -28,5 +28,8 @@ jobs:
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: ./connect-database.sh
 
+      - name: Docker check
+        run: docker ps
+
       - name: Prisma push
         run: npx prisma db push
