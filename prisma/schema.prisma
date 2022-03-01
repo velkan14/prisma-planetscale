@@ -17,7 +17,6 @@ model User {
   email  String? @unique
   name   String?
   phrase String?
-  detail String?
 
   @@index([email])
 }
