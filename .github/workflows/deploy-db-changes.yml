@@ -1,7 +1,6 @@
 name: 02 - Push Preview and Deploy Request
 
 on:
-  workflow_dispatch,
   pull_request:
     paths:
       - "prisma/schema.prisma"
@@ -10,11 +9,10 @@ env:
   pscale_base_directory: .pscale
 
 jobs:
-
   push-to-preview:
     name: "Push to Preview"
     runs-on: ubuntu-latest
-        
+
     steps:
       - name: checkout
         uses: actions/checkout@v2
