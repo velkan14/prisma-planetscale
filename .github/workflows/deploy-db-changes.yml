@@ -49,4 +49,4 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-        run: echo DEPLOY REQUEST
+        run: ./create-db-branch-dr-and-connection.sh
