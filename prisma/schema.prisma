@@ -16,7 +16,6 @@ model User {
   id    String  @id @default(cuid())
   email String? @unique
   name  String?
-  phase String?
 
   @@index([email])
 }

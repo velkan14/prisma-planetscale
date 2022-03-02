@@ -21,10 +21,8 @@ function pscale {
     if [ -n "$NO_DOCKER" ]; then
         command="`which pscale` $@"
     else
-        network=$(docker inspect --format '{{json .NetworkSettings.Networks}}' `hostname` | jq -r 'keys[0]')
-        echo $network
         # For debugging, set PSCALE_VERSION to a version of your choice. It defaults to "latest".
-        command="docker run -d --network $network -e HOME=/tmp -v $HOME/.config/planetscale:/tmp/.config/planetscale -e PSCALE_ALLOW_NONINTERACTIVE_SHELL=true -p 127.0.0.1:3309:3306 --user $(id -u):$(id -g) --rm -i $tty planetscale/pscale:${PSCALE_VERSION:-"latest"} $@ --service-token $PLANETSCALE_SERVICE_TOKEN"
+        command="docker run -d -e HOME=/tmp -v $HOME/.config/planetscale:/tmp/.config/planetscale -e PSCALE_ALLOW_NONINTERACTIVE_SHELL=true -p 127.0.0.1:3309:3306 --user $(id -u):$(id -g) --rm -i $tty planetscale/pscale:${PSCALE_VERSION:-"latest"} $@ --service-token $PLANETSCALE_SERVICE_TOKEN"
     fi
 
     # if command is auth and we are running in CI, we will use the script command to get a fake terminal
