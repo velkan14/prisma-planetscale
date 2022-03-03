@@ -45,7 +45,7 @@ jobs:
     name: "Deploy Request"
     runs-on: ubuntu-latest
     needs: push-to-preview
-    if: ${{ github.base_ref == 'refs/heads/main' }}
+    if: ${{ github.base_ref == 'main' }}
 
     steps:
       - name: checkout
