@@ -4,6 +4,11 @@ on:
   push:
     paths:
       - "prisma/schema.prisma"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "prisma/schema.prisma"
 
 env:
   pscale_base_directory: .pscale
@@ -33,6 +38,7 @@ jobs:
     name: "Deploy Request"
     runs-on: ubuntu-latest
     needs: push-to-preview
+    if: "github.ref == main"
 
     steps:
       - name: checkout
@@ -50,3 +56,10 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: ./create-db-branch-dr-and-connection.sh
+
+        uses: jdvr/action-add-comment@master
+        with:
+          comment: 'There is a new deploy request. You can check it here $DEPLOY_REQUEST_URL 💾'
+        env:
+          DEPLOY_REQUEST_URL: {{ needs.push-to-preview.outputs.DEPLOY_REQUEST_URL }}
+          GITHUB_TOKEN: {{ secrets.GITHUB_TOKEN }}
