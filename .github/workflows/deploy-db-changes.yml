@@ -65,7 +65,9 @@ jobs:
         run: ./create-db-branch-dr-and-connection.sh
 
       - name: Comment deploy URL
-        uses: actions/github-script@v6
+        uses: actions/github-script@v5
+        env:
+          DEPLOY_REQUEST_URL: ${{ needs.push-to-preview.outputs.DEPLOY_REQUEST_URL }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -73,7 +75,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `There is a new deploy request. You can check it here ${context.needs.push-to-preview.outputs.DEPLOY_REQUEST_URL} 💾`
+              body: `There is a new deploy request. You can check it here ${process.env.DEPLOY_REQUEST_URL} 💾`
             })
 
       
