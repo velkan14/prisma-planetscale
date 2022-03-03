@@ -70,7 +70,7 @@ function create-deploy-request {
     if [ -n "$CI" ]; then
         echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
         echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-        create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+        #create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
     fi   
 }
 
@@ -166,8 +166,6 @@ function create-diff-for-ci {
     while read -r line; do
         lines="$lines\n$line"
     done < <(pscale deploy-request diff "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME" --format=json | jq .[].raw)
-
-        echo "after diff"
     
     if [ $? -ne 0 ]; then
         BRANCH_DIFF="$BRANCH_DIFF : ${lines}"
