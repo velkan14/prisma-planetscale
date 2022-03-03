@@ -14,7 +14,7 @@ env:
   pscale_base_directory: .pscale
 
 jobs:
-  push-to-preview:
+  syncronize:
     name: "Push to Preview"
     runs-on: ubuntu-latest
 
@@ -34,20 +34,19 @@ jobs:
 
       - name: Prisma push
         run: npx prisma db push --skip-generate
-
-      - name: PRINT
-        env:
-          HELLO: ${{github.ref}}
-          BYE: ${{github.base_ref}}
-        run: echo $HELLO
         
   deploy-request:
     name: "Deploy Request"
     runs-on: ubuntu-latest
-    needs: push-to-preview
+    needs: syncronize
     if: ${{ github.base_ref == 'main' }}
 
     steps:
+      - name: PRINT
+        env:
+          DEPLOY_REQUEST_URL: ${{ needs.syncronize.outputs.DEPLOY_REQUEST_URL }}
+        run: echo $DEPLOY_REQUEST_URL
+
       - name: checkout
         uses: actions/checkout@v2
 
@@ -65,9 +64,9 @@ jobs:
         run: ./create-db-branch-dr-and-connection.sh
 
       - name: Comment deploy URL
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         env:
-          DEPLOY_REQUEST_URL: ${{ needs.push-to-preview.outputs.DEPLOY_REQUEST_URL }}
+          DEPLOY_REQUEST_URL: ${{ needs.syncronize.outputs.DEPLOY_REQUEST_URL }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
