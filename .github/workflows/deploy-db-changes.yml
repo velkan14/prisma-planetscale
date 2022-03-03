@@ -75,7 +75,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'There is a new deploy request. You can check it here {$DEPLOY_REQUEST_URL} 💾'
+              body: "There is a new deploy request. You can check it here $DEPLOY_REQUEST_URL 💾"
             })
 
       
