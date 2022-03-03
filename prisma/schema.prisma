@@ -19,7 +19,7 @@ model User {
   phase    String?
   phaser   String?
   phrasing String?
-  again    Boolean?
+  agai     Boolean?
 
   @@index([email])
 }
