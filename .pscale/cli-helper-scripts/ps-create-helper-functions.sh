@@ -144,6 +144,7 @@ function create-branch-info {
 }
 
 function create-diff-for-ci {
+    echo "creatediffforci"
     local DB_NAME=$1
     local ORG_NAME=$2
     local deploy_request_number=$3 
@@ -153,8 +154,10 @@ function create-diff-for-ci {
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     local BRANCH_DIFF="Diff could not be generated for deploy request $deploy_request"
 
+    echo $deploy_request
     # updating schema for branch
     if [ -n "$refresh_schema" ]; then
+        echo "refresh schema"
         pscale branch refresh-schema "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME"
     fi  
 
@@ -164,6 +167,7 @@ function create-diff-for-ci {
         lines="$lines\n$line"
     done < <(pscale deploy-request diff "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME" --format=json | jq .[].raw)
 
+        echo "after diff"
     
     if [ $? -ne 0 ]; then
         BRANCH_DIFF="$BRANCH_DIFF : ${lines}"
