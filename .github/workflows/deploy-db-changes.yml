@@ -45,9 +45,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: Check docker
-        run: docker ps
-
       - name: Planescale deploy request
         id: deploy_request
         timeout-minutes: 3

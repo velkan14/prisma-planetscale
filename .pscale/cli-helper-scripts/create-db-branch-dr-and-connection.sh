@@ -4,12 +4,11 @@
 
 BRANCH_NAME="$1"
 
-. set-db-and-org-and-branch-name.sh
 
 . ps-create-helper-functions.sh
-exists=check-deploy-request "$DB_NAME" preview "$ORG_NAME"
+check-deploy-request "$DB_NAME" preview "$ORG_NAME"
 
-if [ exists ]
+if [ $? ]
 then
     exit 0
 fi
