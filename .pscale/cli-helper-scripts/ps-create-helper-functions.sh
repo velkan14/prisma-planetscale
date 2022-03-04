@@ -58,7 +58,7 @@ function check-deploy-request {
     fi
     local deploy_request_number=`echo $raw_output | pscale deploy-request list prisma-planetscale --org "$ORG_NAME" --format json | jq -c '.[] | select(.state | contains("open")) | select(.branch | contains("preview")) | select(.into_branch | contains("main")) | .number'`
     # if deploy request number is empty, then error
-    if [ -z "$deploy_request_number" ]; then
+    if [ ! -z "$deploy_request_number" ]; then
         echo "Already exists deploy request: $deploy_request_number"
         if [ -n "$CI" ]; then
            local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
