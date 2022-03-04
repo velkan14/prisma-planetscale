@@ -66,9 +66,8 @@ function check-deploy-request {
             echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
             echo "::set-output name=DEPLOY_EXISTS::true"
         fi
-        exit 0
+        exit 1
     fi
-
 }
 
 function create-deploy-request {
