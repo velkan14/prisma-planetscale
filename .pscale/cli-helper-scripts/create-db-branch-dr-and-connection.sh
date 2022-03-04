@@ -8,10 +8,8 @@ BRANCH_NAME="$1"
 . ps-create-helper-functions.sh
 check-deploy-request "$DB_NAME" preview "$ORG_NAME"
 
-exists=$?
-if [ -z "$exists" ]
-then
+if [ $? -ne 0 ]; then
     exit 0
+else
+    create-deploy-request "$DB_NAME" preview "$ORG_NAME"    
 fi
-
-create-deploy-request "$DB_NAME" preview "$ORG_NAME"
