@@ -56,7 +56,7 @@ function check-deploy-request {
         echo "Could not check if already exists: $raw_output"
         exit 1
     fi
-    local deploy_request_number=`echo $raw_output | pscale deploy-request list prisma-planetscale --format json | jq -c '.[] | select(.state | contains("open")) | select(.branch | contains("preview")) | select(.into_branch | contains("main")) | .number'`
+    local deploy_request_number=`echo $raw_output | pscale deploy-request list prisma-planetscale --org "$ORG_NAME" --format json | jq -c '.[] | select(.state | contains("open")) | select(.branch | contains("preview")) | select(.into_branch | contains("main")) | .number'`
     # if deploy request number is empty, then error
     if [ -z "$deploy_request_number" ]; then
         echo "Already exists deploy request: $deploy_request_number"
