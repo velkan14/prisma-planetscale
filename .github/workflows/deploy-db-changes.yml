@@ -54,13 +54,14 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-        run: ./create-deploy-request.sh
+        run: ./check-create-deploy-request.sh
 
       - name: Comment deploy URL
         uses: actions/github-script@v6
         env:
           DEPLOY_REQUEST_URL: ${{ steps.deploy_request.outputs.DEPLOY_REQUEST_URL }}
           DEPLOY_EXISTS: ${{ steps.deploy_request.outputs.DEPLOY_EXISTS }}
+          BRANCH_DIFF: ${{ steps.deploy_request.outputs.BRANCH_DIFF }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -68,5 +69,6 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `${process.env.DEPLOY_EXISTS ? 'The deploy request already exists.' : 'There is a new deploy request.'}  You can check it here ${process.env.DEPLOY_REQUEST_URL} 💾`
+              body: `${process.env.DEPLOY_EXISTS ? 'The deploy request already exists.' : 'There is a new deploy request.'}  You can check it here ${process.env.DEPLOY_REQUEST_URL} 💾
+              ${process.env.BRANCH_DIFF}`
             })

@@ -13,5 +13,6 @@ if [ $? -ne 0 ]; then
 else
     create-deploy-request "$DB_NAME" preview "$ORG_NAME"    
 fi
-
+echo creatediff
 create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+echo $BRANCH_DIFF
