@@ -1,7 +1,12 @@
 name: 02 - Push Preview and Deploy Request
 
 on:
+  push:
+    paths:
+      - "prisma/schema.prisma"
   pull_request:
+    branches:
+      - main
     paths:
       - "prisma/schema.prisma"
 
@@ -9,7 +14,7 @@ env:
   pscale_base_directory: .pscale
 
 jobs:
-  push-to-preview:
+  syncronize:
     name: "Push to Preview"
     runs-on: ubuntu-latest
 
@@ -20,13 +25,54 @@ jobs:
       - name: Connect to database
         timeout-minutes: 3
         env:
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN_NAME: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
           PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
-          GITHUB_USER: ${{github.actor}}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: ./connect-database.sh
 
       - name: Prisma push
-        run: npx prisma db push
+        run: npx prisma db push --skip-generate
+        
+  deploy-request:
+    name: "Deploy Request"
+    runs-on: ubuntu-latest
+    needs: syncronize
+    if: ${{ github.base_ref == 'main' }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Planescale deploy request
+        id: deploy_request
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_NAME: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+        working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
+        run: ./check-create-deploy-request.sh
+
+      - name: Comment deploy URL
+        uses: actions/github-script@v6
+        env:
+          DEPLOY_REQUEST_URL: ${{ steps.deploy_request.outputs.DEPLOY_REQUEST_URL }}
+          DEPLOY_EXISTS: ${{ steps.deploy_request.outputs.DEPLOY_EXISTS }}
+          BRANCH_DIFF: ${{ steps.deploy_request.outputs.BRANCH_DIFF }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `${process.env.DEPLOY_EXISTS ? 'The deploy request already exists.' : 'There is a new deploy request.'}  You can check it here ${process.env.DEPLOY_REQUEST_URL} 💾     
+              
+              \`\`\`
+              ${process.env.BRANCH_DIFF}
+              \`\`\`
+              `
+            })
