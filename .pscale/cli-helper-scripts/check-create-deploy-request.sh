@@ -11,6 +11,7 @@ check-deploy-request "$DB_NAME" preview "$ORG_NAME"
 if [ $? -eq 0 ]; then
     create-deploy-request "$DB_NAME" preview "$ORG_NAME"    
 fi
-echo creatediff
-create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+echo $deploy_request_number
+echo $DEPLOY_REQUEST_NUMBER
+create-diff-for-ci "$DB_NAME" "$ORG_NAME" 11 "$BRANCH_NAME"
 echo $BRANCH_DIFF
