@@ -54,7 +54,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-        run: ./create-db-branch-dr-and-connection.sh
+        run: ./create-deploy-request.sh
 
       - name: Comment deploy URL
         uses: actions/github-script@v6
@@ -70,6 +70,3 @@ jobs:
               repo: context.repo.repo,
               body: `${process.env.DEPLOY_EXISTS ? 'The deploy request already exists.' : 'There is a new deploy request.'}  You can check it here ${process.env.DEPLOY_REQUEST_URL} 💾`
             })
-
-      
-
