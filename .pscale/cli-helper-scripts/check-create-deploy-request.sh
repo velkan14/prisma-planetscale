@@ -6,7 +6,7 @@ BRANCH_NAME="$1"
 
 
 . ps-create-helper-functions.sh
-local deploy_number=$(check-deploy-request "$DB_NAME" preview "$ORG_NAME")
+check-deploy-request "$DB_NAME" preview "$ORG_NAME"
 
 if [ $? -eq 0 ]; then
     deploy_number=create-deploy-request "$DB_NAME" preview "$ORG_NAME"

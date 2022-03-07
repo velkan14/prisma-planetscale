@@ -70,9 +70,9 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `${process.env.DEPLOY_EXISTS ? 'The deploy request already exists.' : 'There is a new deploy request.'}  You can check it here ${process.env.DEPLOY_REQUEST_URL} 💾     
-              ```
-
+              
+              \`\`\`
               ${process.env.BRANCH_DIFF}
-              ```
+              \`\`\`
               `
             })
